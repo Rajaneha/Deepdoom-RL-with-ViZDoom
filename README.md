@@ -5,7 +5,7 @@
 
 **DeepDoom** is a reinforcement learning project built on the [ViZDoom](https://github.com/mwydmuch/ViZDoom) platform. It leverages **PPO**, **A2C**, and **DQN** algorithms to train AI agents for combat and survival in various Doom-inspired FPS scenarios.
 
-> Includes: 🧠 Custom environments, 📈 training visualizations, 🕹️ real-time interaction via Flask web app, and 🎓 curriculum learning strategies.
+> Includes: 🧠 Custom Gym-compatible environments, 📈 training visualizations, 🕹️ real-time interaction via Flask web app, and 🎓 curriculum learning strategies.
 
 ---
 
