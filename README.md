@@ -1,20 +1,11 @@
-# DeepDoom: Reinforcement Learning with ViZDoom
+# 🎮 DeepDoom: Reinforcement Learning with ViZDoom
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12.4-blue?logo=python">
-  <img src="https://img.shields.io/badge/PyTorch-2.2.2-red?logo=pytorch">
-  <img src="https://img.shields.io/badge/Gym-0.26.2-brightgreen?logo=openai">
-  <img src="https://img.shields.io/badge/Stable--Baselines3-2.2.1-blueviolet?logo=github">
-  <img src="https://img.shields.io/badge/ViZDoom-1.2.0-lightgrey?logo=doom">
-</p>
 
-## 🎯 Project Overview
+## 🚀 Overview
 
-**DeepDoom** is a deep reinforcement learning project built on top of [ViZDoom](https://github.com/mwydmuch/ViZDoom), a Doom-based RL platform. This project explores the training and evaluation of AI agents using **PPO**, **A2C**, and **DQN** algorithms in complex FPS game scenarios.
+**DeepDoom** is a reinforcement learning project built on the [ViZDoom](https://github.com/mwydmuch/ViZDoom) platform. It leverages **PPO**, **A2C**, and **DQN** algorithms to train AI agents for combat and survival in various Doom-inspired FPS scenarios.
 
-The goal is to teach agents how to navigate, aim, survive, and eliminate enemies across different challenge levels in Doom.
-
-> 🔧 Built with custom Gym-compatible environments, visualization, model evaluation, curriculum learning, and a Flask web UI for real-time interaction with trained agents.
+> Includes: 🧠 Custom environments, 📈 training visualizations, 🕹️ real-time interaction via Flask web app, and 🎓 curriculum learning strategies.
 
 ---
 
@@ -28,63 +19,43 @@ The goal is to teach agents how to navigate, aim, survive, and eliminate enemies
 
 ---
 
-## 🗺️ Scenarios Implemented
+## 🧪 Scenarios & Challenges
 
-## 🧠 Problem Statements / Scenarios
+### 🟩 `basic.cfg`: Feasibility Test
 
-### 🟩 `basic.cfg`
-> The purpose of the scenario is just to check if using this framework to train some AI in a 3D environment is feasible.  
-> Map is a rectangle with gray walls, ceiling and floor. The player is spawned along the longer wall, in the center. A red, circular monster is spawned randomly somewhere along the opposite wall.  
-> Player can only move left, move right, or shoot. One hit is enough to kill the monster. The episode finishes when the monster is killed or times out.
+A simple test scenario to verify that training works.
 
-- **Rewards:**
-  - 🟥 +101 for killing the monster  
-  - ❌ -5 for missing a shot  
-  - ⏳ Living reward = -1 per step  
-- **Buttons:** Move Left, Move Right, Shoot (3 actions)  
-- **Timeout:** 300 steps
+- 🎯 Reward: +101 for killing the monster  
+- 💣 Penalty: -5 for missed shot  
+- ⌛ Step penalty: -1 per step  
+- 🎮 Actions: Move Left, Move Right, Shoot  
+- ⏳ Timeout: 300 steps
 
 ---
 
-### 🟨 `defend_the_center.cfg`
-> The purpose of this scenario is to teach the agent that killing monsters is GOOD, and getting killed by monsters is BAD.  
-> Wasting ammunition is also discouraged.  
-> The agent is only rewarded for killing monsters — it must learn to survive and manage its ammo.  
-> The player is spawned at the center of a circular map, surrounded by melee-only monsters that respawn after death.  
-> The episode ends when the player dies (inevitable due to limited ammo).
+### 🟨 `defend_the_center.cfg`: Survival Arena
 
-- **Rewards:**
-  - 🔫 +1 for killing a monster  
-  - 💀 Death penalty = -1  
-- **Buttons:** Turn Left, Turn Right, Shoot (3 actions)
+Player in center with limited ammo, surrounded by respawning melee monsters.
+
+- ☠️ Reward: +1 per kill  
+- 😵 Penalty: -1 on death  
+- 🎮 Actions: Turn Left, Turn Right, Shoot  
+
+---
+### 🟥 `deadly_corridor.cfg`: Navigation Under Fire
+
+Navigate toward a goal while avoiding ranged attacks.
+
+- ➕ Closer to goal: +dX  
+- ➖ Moving back: -dX  
+- 💀 Death: -100  
+- 🎮 Actions: Turn Left, Turn Right, Move Left/Right, Shoot  
+- ⏳ Timeout: 4200 steps  
+- ⚙️ Difficulty: `doom_skill = 5`  
+- 🎓 Curriculum: `s1` → `s5` (200,000 steps total)
 
 ---
 
-### 🟥 `deadly_corridor.cfg` (⚠️ Curriculum Learning)
-> The purpose of this scenario is to teach the agent to **navigate toward its goal (a green vest)** while surviving.  
-> The map is a corridor filled with **6 shooting monsters**.  
-> The player is rewarded for getting closer to the vest and penalized for going backward.  
-> If the player ignores monsters and charges ahead, it will likely be killed before reaching the goal.  
-> To make survival necessary, the difficulty level is set using `doom_skill = 5`.
-
-- **Rewards:**
-  - ➕ +dX for getting closer to the vest  
-  - ➖ -dX for moving away from the vest  
-  - 💀 Death penalty = -100  
-- **Buttons:** Turn Left, Turn Right, Move Left, Move Right, Shoot (5 actions)  
-- **Timeout:** 4200 steps  
-- **Difficulty:** `doom_skill = 5`
-
-#### 📈 Curriculum Learning Strategy:
-Trained in **5 stages** using:
-- `deadly_corridor_s1.cfg`
-- `deadly_corridor_s2.cfg`
-- `deadly_corridor_s3.cfg`
-- `deadly_corridor_s4.cfg`
-- `deadly_corridor_s5.cfg`  
-Each level increases difficulty. Training continues from one stage’s model to the next with total **200,000 steps**.
-
----
 
 ## 🧪 Training Overview
 
@@ -104,31 +75,6 @@ A simple Flask web interface allows you to:
 - Visualize how each model works after the training 
 - Interact with agents in real time
 
-### 🌲 Repo Structure
-```bash
-DeepDoom/
-├── main/
-│   ├── app.py
-│   ├── basic_env.py
-│   ├── basic_hardcode.py
-│   ├── defend_env.py
-│   ├── deadly_env.py
-│   ├── models/
-│   │   ├── basic_ppo_1.zip
-│   │   ├── deadly_ppo_1.zip
-│   │   ├── defend_ppo_1.zip
-│   │   ├── basic_dqn.zip
-│   │   ├── basic_a2c.zip
-│   │   └── ppo_vizdoom_best.ppt
-│   ├── templates/
-│   │   └── index.html
-│   └── static/
-│       └── style.css
-├── deep_doom.ipynb
-├── requirements.txt
-└── README.md
-```
----
 
 ## 🛠️ How to Run
 
