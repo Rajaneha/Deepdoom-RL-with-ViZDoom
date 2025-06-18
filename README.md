@@ -1,4 +1,4 @@
-# 🎮 DeepDoom: Reinforcement Learning with ViZDoom
+# 🎮 DeepDoom: RL with ViZDoom
 
 
 ## 🚀 Overview
